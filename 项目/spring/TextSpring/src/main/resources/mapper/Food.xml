@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.textspring.mapper.FoodMapper">
+
+    <resultMap id="Record" type="com.example.textspring.entity.Food">
+        <id property="food_id" column="food_id"/>
+        <result property="food_name" column="food_name"/>
+        <result property="img_url" column="img_url"/>
+        <result property="food_price" column="food_price"/>
+        <result property="food_rest" column="food_rest"/>
+        <result property="food_type" column="food_type"/>
+
+    </resultMap>
+
+    <update id="update">
+        update food
+        <set>
+            <if test="food_name != null">
+                food_name = #{food_name},
+            </if>
+            <if test="img_url != null">
+                img_url = #{img_url},
+            </if>
+            <if test="food_price != null">
+                food_price = #{food_price},
+            </if>
+            <if test="food_rest != null">
+                food_rest = #{food_rest},
+            </if>
+            <if test="food_type != null">
+                food_type = #{food_type}
+            </if>
+        </set>
+        <where>
+            food_id = #{food_id}
+        </where>
+    </update>
+
+
+    <select id="findfood" resultMap="Record">
+        select * from food where food_id = #{food_id}
+    </select>
+
+    <update id="updateFood_rest">
+        update food set food_rest=food_rest-#{numbers} where food_id=#{food_id}
+    </update>
+
+    <update id="backFood_rest">
+        update food set food_rest=food_rest+#{numbers} where food_id=#{food_id}
+    </update>
+
+</mapper>

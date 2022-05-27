@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.textspring.mapper.OrderMapper">
+
+    <resultMap id="Record" type="com.example.textspring.entity.Orders">
+        <id property="order_id" column="order_id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="food_id" column="food_id"/>
+        <result property="numbers" column="numbers"/>
+        <result property="worker_id" column="worker_id"/>
+        <result property="order_state" column="order_state"/>
+
+    </resultMap>
+
+    <update id="update">
+        update orders
+        <set>
+            <if test="user_id != null">
+                user_id = #{user_id},
+            </if>
+            <if test="food_id != null">
+                food_id = #{food_id},
+            </if>
+            <if test="numbers != null">
+                numbers = #{numbers},
+            </if>
+            <if test="worker_id != null">
+                worker_id = #{worker_id},
+            </if>
+            <if test="order_state != null">
+                order_state = #{order_state}
+            </if>
+        </set>
+        <where>
+            order_id = #{order_id}
+        </where>
+    </update>
+
+    <insert id="insertorder" >
+        insert into orders(user_id,food_id,numbers,order_state) values (#{user_id},#{food_id},#{numbers},0)
+    </insert>
+
+    <select id="findorder" resultMap="Record">
+        select * from orders where order_id = #{order_id}
+    </select>
+
+    <delete id="delByOrder_id">
+        delete from orders where order_id = #{order_id}
+    </delete>
+
+    <update id="getorder">
+        update orders set order_state=#{state},worker_id=#{worker_id} where order_id=#{order_id}
+    </update>
+
+</mapper>

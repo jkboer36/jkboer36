@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.textspring.mapper.UserMapper">
+
+    <resultMap id="Record" type="com.example.textspring.entity.User">
+        <id property="user_id" column="user_id"/>
+        <result property="user_account" column="user_account"/>
+        <result property="user_name" column="user_name"/>
+        <result property="user_password" column="user_password"/>
+        <result property="user_root" column="user_root"/>
+
+    </resultMap>
+
+    <update id="update">
+        update user
+        <set>
+            <if test="user_account != null">
+                user_account = #{user_account},
+            </if>
+            <if test="user_name != null">
+                user_name = #{user_name},
+            </if>
+            <if test="user_password != null">
+                user_password = #{user_password},
+            </if>
+            <if test="user_root != null">
+                user_root = #{user_root}
+            </if>
+        </set>
+        <where>
+            user_id = #{user_id}
+        </where>
+    </update>
+
+    <select id="finduser" resultMap="Record">
+        select * from user where user_id = #{user_id}
+    </select>
+
+
+
+    <select id="finduser_ac" resultMap="Record">
+        select * from user where user_account = #{user_account}
+    </select>
+
+    <insert id="register">
+        insert into user(user_name,user_account,user_password,user_root) values(#{user_name}, #{user_account}, #{user_password}, 1)
+    </insert>
+
+    <update id="changepassword">
+        update user set user_password=#{user_newpassword} where user_account = #{user_account}
+    </update>
+
+</mapper>
