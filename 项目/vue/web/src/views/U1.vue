@@ -57,7 +57,7 @@
             :append-to-body="true"
             draggable
         >
-          <span>接取该订单吗？</span>
+          <span>确认支付吗？</span>
           <template #footer>
             <span class="dialog-footer">
               <el-button round @click="dialog1Visible = false"
@@ -110,6 +110,8 @@
 
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "U1",
@@ -140,11 +142,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root')!== '1'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/orders/searchorderU',
+      axios.get(globalconfig.axios_url+'/orders/searchorderU',
           {params:{pageNum:this.currentPage, pageSize:'6',userid:window.localStorage.getItem('user_id'),orderstate:"0"}})
           .then(res=>{
             console.log(res);
@@ -153,11 +158,12 @@ export default {
           })
     },
     Return: function (row) {
-      this.form.order_id = row.order_id;
+      this.form.order_id = row.orders.order_id;
       this.dialog2Visible = true;
     },
     Returnorder(){
-      axios.post('http://localhost:8081/users/returnorder',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/users/returnorder',
           {order_id:this.form.order_id
           })
           .then(function (response){
@@ -173,21 +179,21 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog2Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog2Visible = false;
-      this.currentPage = 1;//更新当前页码
-      this.getlist(); //重新查询
     },
     pay: function (row) {
       this.dialog1Visible = true;
-      this.form.order_id=row.order_id;
+      this.form.order_id=row.orders.order_id;
     },
     payorder(){
-      axios.post('http://localhost:8081/users/pay',
-          {order_id:this.form.order_id
-          })
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/users/pay',
+          {order_id:this.form.order_id})
           .then(function (response){
             console.log(response)
             if(response.data.code === 200){
@@ -201,12 +207,16 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog1Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog1Visible = false;
-      this.currentPage = 1;//更新当前页码
-      this.getlist(); //重新查询
+      //
+      // this.dialog1Visible = false;
+      // this.currentPage = 1;//更新当前页码
+      // this.getlist(); //重新查询
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;//更新当前页码

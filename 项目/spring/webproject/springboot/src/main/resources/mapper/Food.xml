@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.FoodMapper">
+
+    <resultMap id="Record" type="com.example.springboot.entity.food">
+        <id property="food_id" column="food_id"/>
+        <result property="food_name" column="food_name"/>
+        <result property="food_picture" column="food_picture"/>
+        <result property="food_price" column="food_price"/>
+        <result property="food_rest" column="food_rest"/>
+        <result property="food_type" column="food_type"/>
+
+    </resultMap>
+
+    <select id="findfood" resultMap="Record">
+        select * from food where food_id = #{food_id}
+    </select>
+
+    <update id="updateFood_rest">
+        update food set food_rest=food_rest-#{numbers} where food_id=#{food_id}
+    </update>
+
+    <update id="backFood_rest">
+        update food set food_rest=food_rest+#{numbers} where food_id=#{food_id}
+    </update>
+</mapper>

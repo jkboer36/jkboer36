@@ -50,6 +50,8 @@
 <script>
 
 import axios from "axios";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "U1",
@@ -76,11 +78,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root')!== '1'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/orders/searchorderU',
+      axios.get(globalconfig.axios_url+'/orders/searchorderU',
           {params:{pageNum:this.currentPage, pageSize:'6',userid:window.localStorage.getItem('user_id'),orderstate:''}})
           .then(res=>{
             console.log(res);

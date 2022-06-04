@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.web.mapper.changeuser">
+    <update id="update">
+        update user
+        <set>
+            <if test="user_account != null">
+                user_account = #{user_account},
+            </if>
+            <if test="user_name != null">
+                user_name = #{user_name},
+            </if>
+            <if test="user_password != null">
+                user_password = #{user_password},
+            </if>
+            <if test="user_root != null">
+                user_root = #{user_root}
+            </if>
+        </set>
+        <where>
+            user_id = #{user_id}
+        </where>
+    </update>
+</mapper>

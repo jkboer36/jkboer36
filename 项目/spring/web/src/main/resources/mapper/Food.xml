@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.web.mapper.changefood">
+    <update id="update">
+        update food
+        <set>
+            <if test="food_name != null">
+                food_name = #{food_name},
+            </if>
+            <if test="img_url != null">
+                img_url = #{img_url},
+            </if>
+            <if test="food_price != null">
+                food_price = #{food_price},
+            </if>
+            <if test="food_rest != null">
+                food_rest = #{food_rest},
+            </if>
+            <if test="food_type != null">
+                food_type = #{food_type}
+            </if>
+        </set>
+        <where>
+            food_id = #{food_id}
+        </where>
+    </update>
+</mapper>

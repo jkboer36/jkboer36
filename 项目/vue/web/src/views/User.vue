@@ -91,6 +91,8 @@
 
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "ad_food",
@@ -132,11 +134,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root')!== '1'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/foods/searchfood',
+      axios.get(globalconfig.axios_url+'/foods/searchfood',
           {params:{pageNum:this.currentPage, pageSize:'6', foodname:'',foodtype:''}})
           .then(res=>{
             console.log(res);
@@ -150,7 +155,7 @@ export default {
       /*
       主体函数
       */
-      axios.get('http://localhost:8081/foods/searchfood',
+      axios.get(globalconfig.axios_url+'/foods/searchfood',
           {params:{pageNum:this.currentPage, pageSize:'6', foodname:this.searchfoodname,foodtype:this.searchfoodtype}})
           .then(res=>{
             console.log(res);
@@ -167,7 +172,8 @@ export default {
       this.dialogVisible = true;
     },
     buyfood(){
-      axios.post('http://localhost:8081/users/buy',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/users/buy',
           {food_id:this.form.food_id ,user_id: window.localStorage.getItem('user_id'),numbers:this.form.numbers
           })
           .then(function (response){
@@ -183,10 +189,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialogVisible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialogVisible = false;
+
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;//更新当前页码

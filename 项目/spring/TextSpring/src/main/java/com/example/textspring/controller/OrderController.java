@@ -38,7 +38,6 @@ public class OrderController {
     @GetMapping("/searchorderR")
     public Page searchorderR(@RequestParam Integer pageNum, @RequestParam Integer pageSize,@RequestParam Integer workerid,@RequestParam Integer orderstate)
     {
-        System.out.println(workerid);
         return orderService.selectByWorkerid(pageNum,pageSize,workerid,orderstate);
     }
 

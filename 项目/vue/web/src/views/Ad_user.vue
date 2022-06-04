@@ -118,6 +118,8 @@
 <script>
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "ad_user",
@@ -165,11 +167,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root')!== '0'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/users/searchuser',
+      axios.get(globalconfig.axios_url+'/users/searchuser',
           {params:{pageNum:this.currentPage, pageSize:'6', username:""}})
           .then(res=>{
             console.log(res);
@@ -191,7 +196,7 @@ export default {
       /*
       主体函数
       */
-      axios.get('http://localhost:8081/users/searchuser',
+      axios.get(globalconfig.axios_url+'/users/searchuser',
           {params:{pageNum:this.currentPage, pageSize:'6', username:this.searchusername}})
           .then(res=>{
             console.log(res);
@@ -207,6 +212,7 @@ export default {
       this.dialog2Visible = true;
     },
     Deleteuser(){
+      const _this = this;
       axios.post('http://localhost:8081/users/delete',
           {user_id:this.form.user_id
           })
@@ -223,10 +229,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog2Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog2Visible = false;
+
     },
     change: function (row) {
       this.dialog1Visible = true;
@@ -237,8 +246,9 @@ export default {
       this.form.user_root=row.user_root;
     },
     changeuser(){
-      axios.post('http://localhost:8081/users/change',
-          {user_id:this.form.user_id ,user_name:this.form.user_name ,user_account:this.form.user_account, user_password:this.form.user_password, user_root:this.form.use_root
+      const _this =this;
+      axios.post(globalconfig.axios_url+'/users/change',
+          {user_id:this.form.user_id ,user_name:this.form.user_name ,user_account:this.form.user_account, user_password:this.form.user_password, user_root:this.form.user_root
           })
           .then(function (response){
             console.log(response)
@@ -253,10 +263,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog1Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog1Visible = false;
+
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;//更新当前页码

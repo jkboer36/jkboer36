@@ -70,6 +70,8 @@
 
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "B2",
@@ -107,11 +109,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root')!== '2'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/orders/searchorderR',
+      axios.get(globalconfig.axios_url+'/orders/searchorderR',
           {params:{pageNum:this.currentPage, pageSize:'6', workerid:window.localStorage.getItem('user_id'),orderstate:'2'}})
           .then(res=>{
             console.log(res);
@@ -124,7 +129,8 @@ export default {
       this.form.order_id=row.order_id;
     },
     sureorder(){
-      axios.post('http://localhost:8081/workers/sureorder',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/workers/sureorder',
           {order_id:this.form.order_id
           })
           .then(function (response){
@@ -140,12 +146,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog2Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog2Visible = false;
-      this.currentPage = 1;//更新当前页码
-      this.getlist(); //重新查询
+
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;//更新当前页码

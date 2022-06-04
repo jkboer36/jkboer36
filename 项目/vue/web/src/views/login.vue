@@ -76,7 +76,7 @@ export default {
     },
     register(){
       axios.post(globalconfig.axios_url+"/users/register",
-          {user_account:this.loginForm.user_account, user_password:this.loginForm.user_password , user_name:this.loginForm.user_nmae
+          {user_account:this.loginForm.user_account, user_password:this.loginForm.user_password , user_name:this.loginForm.user_name
           })
           .then(function (response){
             console.log(response);

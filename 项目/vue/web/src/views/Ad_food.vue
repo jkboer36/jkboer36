@@ -28,7 +28,7 @@
   >
     <el-table-column prop="img_url" label="图片" width="300">
       <template #default="scope">
-        <div style="max-height:300px ">
+        <div style="max-height:200px ">
           <el-image :src="scope.row.img_url"/>
         </div>
 
@@ -132,6 +132,8 @@
 
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "ad_food",
@@ -177,11 +179,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root') !== '0'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/foods/searchfood',
+      axios.get(globalconfig.axios_url+'/foods/searchfood',
           {params:{pageNum:this.currentPage, pageSize:'6', foodname:'',foodtype:''}})
           .then(res=>{
             console.log(res);
@@ -204,7 +209,7 @@ export default {
       /*
       主体函数
       */
-      axios.get('http://localhost:8081/foods/searchfood',
+      axios.get(globalconfig.axios_url+'/foods/searchfood',
           {params:{pageNum:this.currentPage, pageSize:'6', foodname:this.searchfoodname,foodtype:this.searchfoodtype}})
           .then(res=>{
             console.log(res);
@@ -221,7 +226,8 @@ export default {
       this.dialog2Visible = true;
     },
     Deletefood(){
-      axios.post('http://localhost:8081/foods/delete',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/foods/delete',
           {food_id:this.form.food_id
           })
           .then(function (response){
@@ -237,10 +243,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog2Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog2Visible = false;
+
     },
     change: function (row) {
       this.dialog1Visible = true;
@@ -252,7 +261,8 @@ export default {
       this.form.food_rest=row.food_rest;
     },
     changefood(){
-      axios.post('http://localhost:8081/foods/change',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/foods/change',
           {food_id:this.form.food_id ,food_name:this.form.food_name , img_url:this.form.img_url,food_price:this.form.food_price, food_rest:this.form.food_rest, food_type:this.form.food_type
           })
           .then(function (response){
@@ -268,10 +278,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog1Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
             alert("加载失败，请重新尝试")
           });
-      this.dialog1Visible = false;
+
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;//更新当前页码

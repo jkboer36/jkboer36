@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div style="width: 15%"><el-avatar :size="50" :fit="fill" :src="url" style="margin:20px 10px 10px 30px"/></div>
+    <div style="width: 15%"><el-avatar :size="50" :fit="fill" :src="heard_url" style="margin:20px 10px 10px 30px"/></div>
     <div style="flex:1"></div>
     <div>
       <el-dropdown>
@@ -16,17 +16,22 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name:"userheader",
   data(){
     return{
-      url:require("../assets/avatar1.png")
+      url:require("../assets/avatar1.png"),
+      heard_url:"https://ss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/baike/s=220/sign=db224fab45a98226bcc12c25ba80b97a/622762d0f703918f900af014573d269758eec411.jpg"
     }
   },
   methods:{
-    search:function(){
-
-    }
+    exit(){
+      window.localStorage.removeItem("user_id")
+      window.localStorage.removeItem("user_root")
+      router.push("/");
+    },
   }
 };
 </script>

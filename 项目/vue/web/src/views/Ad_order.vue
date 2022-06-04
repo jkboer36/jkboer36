@@ -115,6 +115,8 @@
 
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import router from "@/router";
+import globalconfig from "@/globalconfig";
 
 export default {
   name: "ad_Order",
@@ -167,11 +169,14 @@ export default {
     };
   },
   created() {
+    if(window.localStorage.getItem('user_root') ===null || window.localStorage.getItem('user_root')!== '0'){
+      router.push("/");
+    }
     this.getlist();
   },
   methods: {
     getlist(){
-      axios.get('http://localhost:8081/orders/searchorderAll',
+      axios.get(globalconfig.axios_url+'/orders/searchorderAll',
           {params:{pageNum:this.currentPage, pageSize:'6'}})
           .then(res=>{
             console.log(res);
@@ -193,7 +198,8 @@ export default {
       this.dialog2Visible = true;
     },
     Deleteorder(){
-      axios.post('http://localhost:8081/orders/delete',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/orders/delete',
           {order_id:this.form.order_id
           })
           .then(function (response){
@@ -209,12 +215,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog2Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog2Visible = false;
-      this.currentPage = 1;//更新当前页码
-      this.getlist(); //重新查询
+
     },
     change: function (row) {
       this.dialog1Visible = true;
@@ -226,7 +233,8 @@ export default {
       this.form.food_id=row.food_id;
     },
     changeorder(){
-      axios.post('http://localhost:8081/orders/change',
+      const _this = this;
+      axios.post(globalconfig.axios_url+'/orders/change',
           {order_id:this.form.order_id, user_id:this.form.user_id ,food_id:this.form.food_id, worker_id:this.form.worker_id, numbers:this.form.numbers, order_state:this.form.order_state
           })
           .then(function (response){
@@ -242,12 +250,13 @@ export default {
                 type: 'warning',
               })
             }
+            _this.dialog1Visible = false;
+            _this.currentPage = 1;//更新当前页码
+            _this.getlist(); //重新查询
           }).catch(error=>{
         alert("加载失败，请重新尝试")
       });
-      this.dialog1Visible = false;
-      this.currentPage = 1;//更新当前页码
-      this.getlist(); //重新查询
+
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;//更新当前页码
